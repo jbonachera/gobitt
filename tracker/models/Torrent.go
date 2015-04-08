@@ -6,12 +6,6 @@ package models
 // to make statistics.
 type Torrent struct {
 	Hash      string
+	Peers     []Peer `bson:"-"` // This is generated on the fly
 	Completed int
-}
-
-// NewTorrent returns a new "torrent" object from a string representing
-// the file's hash. The completed counter is set to 0, as the file was just
-// created.
-func NewTorrent(hash string) *Torrent {
-	return &Torrent{hash, 0}
 }
