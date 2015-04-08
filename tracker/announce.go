@@ -16,7 +16,7 @@ func processAnnounceStarted(c models.ApplicationContext, w http.ResponseWriter, 
 }
 
 func processAnnounceCompleted(c models.ApplicationContext, torrent models.Torrent) {
-	torrent.Completed += 1
+	torrent.Downloaded += 1
 	repo.SaveTorrent(c, torrent)
 
 }
