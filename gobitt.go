@@ -1,4 +1,4 @@
-// Gotracker is an implementation of a file tracker, for the bittorent
+// Gobitt is an implementation of a file tracker, for the bittorent
 // p2p protocol.
 package gobitt
 
