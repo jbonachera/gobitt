@@ -5,7 +5,9 @@ package models
 // incremented each time a peer send a "completed" event. This can be used
 // to make statistics.
 type Torrent struct {
-	Hash      string
-	Peers     []Peer `bson:"-"` // This is generated on the fly
-	Completed int
+	Hash       string
+	Peers      []Peer `bson:"-"` // This is generated on the fly
+	Downloaded int
+	Incomplete int `bson:"-"` // This is generated on the fly
+	Complete   int `bson:"-"` // This is generated on the fly
 }
