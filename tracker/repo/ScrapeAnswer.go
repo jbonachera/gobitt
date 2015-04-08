@@ -32,3 +32,7 @@ func NewScrapeAnswerString(hash string, scrapedata *models.ScrapeFile) string {
 func NewScrapeFile(complete, downloaded, incomplete int) *models.ScrapeFile {
 	return &models.ScrapeFile{complete, downloaded, incomplete}
 }
+
+func NewScrapeFileFromTorrent(t models.Torrent) *models.ScrapeFile {
+	return &models.ScrapeFile{t.Complete, t.Downloaded, t.Incomplete}
+}

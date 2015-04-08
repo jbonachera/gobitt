@@ -19,14 +19,7 @@ func ScrapeHandler(c models.ApplicationContext, w http.ResponseWriter, r *http.R
 	}
 
 	file := repo.GetTorrent(c, req.Info_hash)
-	complete, incomplete := 0, len(file.Peers)
-	for _, peer := range file.Peers {
-		if peer.Left == 0 {
-			complete += 1
-			incomplete -= 1
-		}
-	}
-	scrapeFile := repo.NewScrapeFile(complete, file.Completed, incomplete)
+	scrapeFile := repo.NewScrapeFileFromTorrent(file)
 	scrapeAnswer := repo.NewScrapeAnswerString(req.Info_hash, scrapeFile)
 	fmt.Fprintf(w, scrapeAnswer)
 }
