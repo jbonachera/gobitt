@@ -9,7 +9,7 @@ import (
 // the file's hash. The completed counter is set to 0, as the file was just
 // created.
 func NewTorrent(c models.ApplicationContext, hash string) models.Torrent {
-	return models.Torrent{hash, NewPeerListFromHash(c, hash), 0}
+	return models.Torrent{hash, NewPeerListFromHash(c, hash), 0, 0, 0}
 }
 
 func GetTorrent(c models.ApplicationContext, hash string) models.Torrent {
@@ -22,6 +22,14 @@ func GetTorrent(c models.ApplicationContext, hash string) models.Torrent {
 	} else {
 		t.Peers = NewPeerListFromHash(c, hash)
 	}
+	complete, incomplete := 0, len(t.Peers)
+	for _, peer := range t.Peers {
+		if peer.Left == 0 {
+			complete += 1
+			incomplete -= 1
+		}
+	}
+
 	return t
 }
 
