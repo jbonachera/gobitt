@@ -11,10 +11,15 @@ type Config struct {
 		Port        string
 	}
 	Database struct {
-		Host     string
-		Port     string
-		User     string
-		Password string
+		Host          string
+		Port          string
+		User          string
+		Password      string
+		Connect       string
+		AuthSource    string
+		AuthMecanism  string
+		GSSAPIService string
+		MaxPoolSize   string
 	}
 }
 

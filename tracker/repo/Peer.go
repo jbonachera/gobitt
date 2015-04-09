@@ -2,7 +2,6 @@ package repo
 
 import (
 	"github.com/jbonachera/gobitt/tracker/models"
-	"gopkg.in/mgo.v2/bson"
 	"log"
 	"time"
 )
@@ -39,26 +38,18 @@ func NewPeerFromAnnounceRequest(a *models.AnnounceRequest) models.Peer {
 
 func NewPeerListFromHash(c models.ApplicationContext, hash string) []models.Peer {
 	var peers []models.Peer
-	sess := c.Session.Copy()
-	defer sess.Close()
-	db_peers := sess.DB("tracker").C("peers")
+	var err error
 	// We get a list of all peers seeding this file
-	if err := db_peers.Find(bson.M{"hash": hash}).All(&peers); err != nil {
+	if peers, err = c.Database.FindPeerList(-1, hash); err != nil {
 		log.Fatal(err)
 	}
 	return peers
 }
 
 func RemovePeer(c models.ApplicationContext, peer models.Peer) {
-	sess := c.Session.Copy()
-	defer sess.Close()
-	db_peers := sess.DB("tracker").C("peers")
-	db_peers.Remove(bson.M{"hash": peer.Hash, "peerid": peer.PeerId, "ip": peer.Ip, "port": peer.Port})
+	c.Database.RemovePeer(peer)
 }
 
 func SavePeer(c models.ApplicationContext, peer models.Peer) {
-	sess := c.Session.Copy()
-	defer sess.Close()
-	db_peers := sess.DB("tracker").C("peers")
-	db_peers.Upsert(bson.M{"ip": peer.Ip, "port": peer.Port, "peerid": peer.PeerId, "hash": peer.Hash}, &peer)
+	c.Database.UpsertPeer(peer)
 }
