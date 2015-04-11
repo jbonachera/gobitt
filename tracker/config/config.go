@@ -7,8 +7,9 @@ import (
 
 type Config struct {
 	Server struct {
-		BindAddress string
-		Port        string
+		BindAddress    string
+		Port           string
+		DatabasePlugin string
 	}
 	Database struct {
 		Host          string
@@ -34,6 +35,9 @@ func GetConfig() Config {
 	}
 	if cfg.Server.Port == "" {
 		cfg.Server.Port = "8080"
+	}
+	if cfg.Server.DatabasePlugin == "" {
+		cfg.Server.DatabasePlugin = "mongodb"
 	}
 	return cfg
 }
