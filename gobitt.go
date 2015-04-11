@@ -26,7 +26,7 @@ type contextHandler struct {
 func Start() {
 	cfg := config.GetConfig()
 	context := context.ApplicationContext{}
-	context.Database = plugin.GetDatabasePlugin("mongodb")
+	context.Database = plugin.GetDatabasePlugin(cfg.Server.DatabasePlugin)
 	context.Database.Start(cfg)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
