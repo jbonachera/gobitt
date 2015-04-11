@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"github.com/jbonachera/gobitt/tracker/context"
 	"github.com/jbonachera/gobitt/tracker/models"
 	"log"
 	"time"
@@ -36,7 +37,7 @@ func NewPeerFromAnnounceRequest(a *models.AnnounceRequest) models.Peer {
 		a.NumWant)
 }
 
-func NewPeerListFromHash(c models.ApplicationContext, hash string) []models.Peer {
+func NewPeerListFromHash(c context.ApplicationContext, hash string) []models.Peer {
 	var peers []models.Peer
 	var err error
 	// We get a list of all peers seeding this file
@@ -46,10 +47,10 @@ func NewPeerListFromHash(c models.ApplicationContext, hash string) []models.Peer
 	return peers
 }
 
-func RemovePeer(c models.ApplicationContext, peer models.Peer) {
+func RemovePeer(c context.ApplicationContext, peer models.Peer) {
 	c.Database.RemovePeer(peer)
 }
 
-func SavePeer(c models.ApplicationContext, peer models.Peer) {
+func SavePeer(c context.ApplicationContext, peer models.Peer) {
 	c.Database.UpsertPeer(peer)
 }

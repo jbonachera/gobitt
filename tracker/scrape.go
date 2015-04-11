@@ -2,13 +2,13 @@ package tracker
 
 import (
 	"fmt"
-	"github.com/jbonachera/gobitt/tracker/models"
+	"github.com/jbonachera/gobitt/tracker/context"
 	"github.com/jbonachera/gobitt/tracker/repo"
 	"log"
 	"net/http"
 )
 
-func ScrapeHandler(c models.ApplicationContext, w http.ResponseWriter, r *http.Request) {
+func ScrapeHandler(c context.ApplicationContext, w http.ResponseWriter, r *http.Request) {
 	log.Print("New scrape request from " + r.RemoteAddr)
 	w.Header().Set("Content-type", "text/plain")
 

@@ -1,17 +1,18 @@
 package repo
 
 import (
+	"github.com/jbonachera/gobitt/tracker/context"
 	"github.com/jbonachera/gobitt/tracker/models"
 )
 
 // NewTorrent returns a new "torrent" object from a string representing
 // the file's hash. The completed counter is set to 0, as the file was just
 // created.
-func NewTorrent(c models.ApplicationContext, hash string) models.Torrent {
+func NewTorrent(c context.ApplicationContext, hash string) models.Torrent {
 	return models.Torrent{hash, NewPeerListFromHash(c, hash), 0, 0, 0}
 }
 
-func GetTorrent(c models.ApplicationContext, hash string) models.Torrent {
+func GetTorrent(c context.ApplicationContext, hash string) models.Torrent {
 	var t models.Torrent
 	if t, err := c.Database.FindTorrent(hash); err != nil {
 		t = NewTorrent(c, hash)
@@ -29,6 +30,6 @@ func GetTorrent(c models.ApplicationContext, hash string) models.Torrent {
 	return t
 }
 
-func SaveTorrent(c models.ApplicationContext, t models.Torrent) {
+func SaveTorrent(c context.ApplicationContext, t models.Torrent) {
 	c.Database.UpsertTorrent(t)
 }

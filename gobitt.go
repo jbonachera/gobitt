@@ -5,27 +5,28 @@ package gobitt
 import (
 	"github.com/jbonachera/gobitt/tracker"
 	"github.com/jbonachera/gobitt/tracker/config"
-	"github.com/jbonachera/gobitt/tracker/models"
-	"github.com/jbonachera/gobitt/tracker/plugins/database"
+	"github.com/jbonachera/gobitt/tracker/context"
+	"github.com/jbonachera/gobitt/tracker/plugin"
+	_ "github.com/jbonachera/gobitt/tracker/plugin/database"
 	"log"
 	"net/http"
 )
 
-type contextFunc func(c models.ApplicationContext, w http.ResponseWriter, r *http.Request)
+type contextFunc func(c context.ApplicationContext, w http.ResponseWriter, r *http.Request)
 
 func (h contextHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.f(h.c, w, r)
 }
 
 type contextHandler struct {
-	c models.ApplicationContext
+	c context.ApplicationContext
 	f contextFunc
 }
 
 func Start() {
 	cfg := config.GetConfig()
-	context := models.ApplicationContext{}
-	context.Database = &database.MongoDBDatabasePlugin{}
+	context := context.ApplicationContext{}
+	context.Database = plugin.GetDatabasePlugin("mongodb")
 	context.Database.Start(cfg)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
