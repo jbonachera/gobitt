@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/jbonachera/gobitt/tracker/config"
 	"github.com/jbonachera/gobitt/tracker/models"
 	"github.com/jbonachera/gobitt/tracker/plugin"
 	"log"
@@ -17,7 +16,7 @@ type MemoryDatabasePlugin struct {
 	peers    []models.Peer
 }
 
-func (self *MemoryDatabasePlugin) Start(cfg config.Config) {
+func (self *MemoryDatabasePlugin) Start() {
 	self.torrents = []models.Torrent{}
 	self.peers = []models.Peer{}
 }

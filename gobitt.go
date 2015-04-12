@@ -27,7 +27,7 @@ func Start() {
 	cfg := config.GetConfig()
 	context := context.ApplicationContext{}
 	context.Database = plugin.GetDatabasePlugin(cfg.Server.DatabasePlugin)
-	context.Database.Start(cfg)
+	context.Database.Start()
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})

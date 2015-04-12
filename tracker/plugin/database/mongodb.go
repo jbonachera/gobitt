@@ -1,13 +1,27 @@
 package database
 
 import (
-	"github.com/jbonachera/gobitt/tracker/config"
+	"code.google.com/p/gcfg"
 	"github.com/jbonachera/gobitt/tracker/models"
 	"github.com/jbonachera/gobitt/tracker/plugin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 )
+
+type dBConfig struct {
+	MongoDB struct {
+		Host          string
+		Port          string
+		User          string
+		Password      string
+		Connect       string
+		AuthSource    string
+		AuthMecanism  string
+		GSSAPIService string
+		MaxPoolSize   string
+	}
+}
 
 func init() {
 	log.Println("Registering mongodb database plugin")
@@ -18,37 +32,37 @@ type MongoDBDatabasePlugin struct {
 	dbSession *mgo.Session
 }
 
-func getDatabaseConfString(cfg config.Config) string {
+func getDatabaseConfString(cfg dBConfig) string {
 	confString := "?"
-	if cfg.Database.Connect != "" {
-		confString += "connect=" + cfg.Database.Connect + "&"
+	if cfg.MongoDB.Connect != "" {
+		confString += "connect=" + cfg.MongoDB.Connect + "&"
 	}
-	if cfg.Database.AuthSource != "" {
-		confString += "authSource=" + cfg.Database.AuthSource + "&"
+	if cfg.MongoDB.AuthSource != "" {
+		confString += "authSource=" + cfg.MongoDB.AuthSource + "&"
 	}
 
-	if cfg.Database.AuthMecanism != "" {
-		confString += "authMecanism=" + cfg.Database.AuthMecanism + "&"
+	if cfg.MongoDB.AuthMecanism != "" {
+		confString += "authMecanism=" + cfg.MongoDB.AuthMecanism + "&"
 	}
-	if cfg.Database.GSSAPIService != "" {
-		confString += "gssapiService=" + cfg.Database.GSSAPIService + "&"
+	if cfg.MongoDB.GSSAPIService != "" {
+		confString += "gssapiService=" + cfg.MongoDB.GSSAPIService + "&"
 	}
-	if cfg.Database.MaxPoolSize != "" {
-		confString += "maxPoolSize=" + cfg.Database.MaxPoolSize + "&"
+	if cfg.MongoDB.MaxPoolSize != "" {
+		confString += "maxPoolSize=" + cfg.MongoDB.MaxPoolSize + "&"
 	}
 	return confString
 }
 
-func getDatabaseString(cfg config.Config) string {
+func getDatabaseString(cfg dBConfig) string {
 	var auth_string string
-	if cfg.Database.User != "" && cfg.Database.Password != "" {
-		auth_string = cfg.Database.User + ":" + cfg.Database.Password + "@"
+	if cfg.MongoDB.User != "" && cfg.MongoDB.Password != "" {
+		auth_string = cfg.MongoDB.User + ":" + cfg.MongoDB.Password + "@"
 	} else {
 		auth_string = ""
 	}
-	return auth_string + cfg.Database.Host + ":" + cfg.Database.Port + getDatabaseConfString(cfg)
+	return auth_string + cfg.MongoDB.Host + ":" + cfg.MongoDB.Port + getDatabaseConfString(cfg)
 }
-func getDatabase(cfg config.Config) *mgo.Session {
+func getDatabase(cfg dBConfig) *mgo.Session {
 	log.Printf("Initiating connection to MongoDB")
 	session, err := mgo.Dial(getDatabaseString(cfg))
 	if err != nil {
@@ -60,7 +74,9 @@ func getDatabase(cfg config.Config) *mgo.Session {
 	return session
 }
 
-func (self *MongoDBDatabasePlugin) Start(cfg config.Config) {
+func (self *MongoDBDatabasePlugin) Start() {
+	var cfg dBConfig
+	gcfg.ReadFileInto(&cfg, "mongodb.ini")
 	self.dbSession = getDatabase(cfg)
 }
 
