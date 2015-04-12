@@ -2,14 +2,14 @@ package plugin
 
 import "github.com/jbonachera/gobitt/tracker/models"
 
-var plugin = make(map[string]DatabasePlugin)
+var dbplugin = make(map[string]DatabasePlugin)
 
 func RegisterDatabasePlugin(name string, newPlugin DatabasePlugin) {
-	plugin[name] = newPlugin
+	dbplugin[name] = newPlugin
 }
 
 func GetDatabasePlugin(name string) DatabasePlugin {
-	return plugin[name]
+	return dbplugin[name]
 }
 
 type DatabasePlugin interface {
