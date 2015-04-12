@@ -3,6 +3,7 @@ package config
 import (
 	"code.google.com/p/gcfg"
 	"log"
+	"time"
 )
 
 type Config struct {
@@ -10,6 +11,7 @@ type Config struct {
 		BindAddress    string
 		Port           string
 		DatabasePlugin string
+		MaxPeerAge     time.Duration
 	}
 }
 
@@ -27,6 +29,9 @@ func GetConfig() Config {
 	}
 	if cfg.Server.DatabasePlugin == "" {
 		cfg.Server.DatabasePlugin = "memory"
+	}
+	if cfg.Server.MaxPeerAge <= 0 {
+		cfg.Server.MaxPeerAge = 3600
 	}
 	return cfg
 }
