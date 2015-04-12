@@ -38,7 +38,7 @@ func Start() {
 	context.Database.Start()
 
 	log.Print("Starting background database cleaner")
-	go purgePeersRunner(context, 10*time.Second, 30*time.Second)
+	go purgePeersRunner(context, cfg.Server.MaxPeerAge*time.Second, 30*time.Second)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})
