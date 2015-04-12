@@ -7,6 +7,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"time"
 )
 
 type dBConfig struct {
@@ -78,6 +79,17 @@ func (self *MongoDBDatabasePlugin) Start() {
 	var cfg dBConfig
 	gcfg.ReadFileInto(&cfg, "mongodb.ini")
 	self.dbSession = getDatabase(cfg)
+	sess := self.dbSession.Copy()
+	defer sess.Close()
+	db := sess.DB("tracker").C("peers")
+
+	hashIndex := mgo.Index{
+		Key:        []string{"hash"},
+		Unique:     true,
+		DropDups:   true,
+		Background: true,
+	}
+	db.EnsureIndex(hashIndex)
 }
 
 func (self *MongoDBDatabasePlugin) FindPeerList(limit int, hash string) ([]models.Peer, error) {
@@ -142,4 +154,12 @@ func (self *MongoDBDatabasePlugin) UpsertTorrent(t models.Torrent) {
 	defer sess.Close()
 	db := sess.DB("tracker").C(table)
 	db.Upsert(bson.M{"hash": t.Hash}, &t)
+}
+func (self *MongoDBDatabasePlugin) PurgePeers(maxAge time.Duration) {
+	table := "peers"
+	sess := self.dbSession.Copy()
+	defer sess.Close()
+	db := sess.DB("tracker").C(table)
+	oldestDate := time.Now().Add(-maxAge)
+	db.Remove(bson.M{"lastseen": bson.M{"$lte": oldestDate}})
 }

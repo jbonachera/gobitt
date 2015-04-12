@@ -4,6 +4,7 @@ import (
 	"github.com/jbonachera/gobitt/tracker/models"
 	"github.com/jbonachera/gobitt/tracker/plugin"
 	"log"
+	"time"
 )
 
 func init() {
@@ -106,5 +107,12 @@ func (self *MemoryDatabasePlugin) UpsertTorrent(torrent models.Torrent) {
 	if !found {
 		self.torrents = append(self.torrents, torrent)
 	}
-
+}
+func (self *MemoryDatabasePlugin) PurgePeers(maxAge time.Duration) {
+	for _, peer := range self.peers {
+		if time.Now().After(peer.LastSeen) {
+			log.Println("Removing old peer " + peer.PeerId)
+			self.RemovePeer(peer)
+		}
+	}
 }
