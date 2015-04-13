@@ -30,8 +30,5 @@ func GetConfig() Config {
 	if cfg.Server.DatabasePlugin == "" {
 		cfg.Server.DatabasePlugin = "memory"
 	}
-	if cfg.Server.MaxPeerAge <= 0 {
-		cfg.Server.MaxPeerAge = 3600
-	}
 	return cfg
 }
