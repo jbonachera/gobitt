@@ -21,6 +21,7 @@ type dBConfig struct {
 		AuthMecanism  string
 		GSSAPIService string
 		MaxPoolSize   string
+		MaxPeerAge    time.Duration
 	}
 }
 
@@ -78,6 +79,9 @@ func getDatabase(cfg dBConfig) *mgo.Session {
 func (self *MongoDBDatabasePlugin) Start() {
 	var cfg dBConfig
 	gcfg.ReadFileInto(&cfg, "mongodb.ini")
+	if cfg.MongoDB.MaxPeerAge <= 0 {
+		cfg.MongoDB.MaxPeerAge = 3600
+	}
 	self.dbSession = getDatabase(cfg)
 	sess := self.dbSession.Copy()
 	defer sess.Close()
@@ -89,7 +93,15 @@ func (self *MongoDBDatabasePlugin) Start() {
 		DropDups:   true,
 		Background: true,
 	}
+	dateIndex := mgo.Index{
+		Key:         []string{"lastseen"},
+		Background:  true,
+		ExpireAfter: cfg.MongoDB.MaxPeerAge * time.Second,
+	}
+
 	db.EnsureIndex(hashIndex)
+	db.EnsureIndex(dateIndex)
+
 }
 
 func (self *MongoDBDatabasePlugin) FindPeerList(limit int, hash string) ([]models.Peer, error) {

@@ -29,8 +29,6 @@ func Start() {
 	context.Database = plugin.GetDatabasePlugin(cfg.Server.DatabasePlugin)
 	context.Database.Start()
 
-	log.Print("Starting background database cleaner")
-
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})
 	http.Handle("/scrape", contextHandler{context, tracker.ScrapeHandler})
