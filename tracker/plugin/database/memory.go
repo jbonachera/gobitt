@@ -20,6 +20,18 @@ type MemoryDatabasePlugin struct {
 func (self *MemoryDatabasePlugin) Start() {
 	self.torrents = []models.Torrent{}
 	self.peers = []models.Peer{}
+	go purgePeerRunner(self)
+
+}
+
+func purgePeerRunner(db *MemoryDatabasePlugin) {
+	tick := time.Tick(60 * time.Second)
+	for {
+		select {
+		case <-tick:
+			db.PurgePeers(3600 * time.Second)
+		}
+	}
 }
 
 func (self *MemoryDatabasePlugin) FindPeerList(limit int, hash string) ([]models.Peer, error) {
