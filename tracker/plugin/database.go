@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"github.com/jbonachera/gobitt/tracker/models"
-	"time"
 )
 
 var dbplugin = make(map[string]DatabasePlugin)
@@ -26,5 +25,4 @@ type DatabasePlugin interface {
 	FindTorrent(hash string) (models.Torrent, error)
 	UpsertTorrent(t models.Torrent)
 	RemoveTorrent(t models.Torrent)
-	PurgePeers(maxAge time.Duration)
 }

@@ -10,7 +10,6 @@ import (
 	_ "github.com/jbonachera/gobitt/tracker/plugin/database"
 	"log"
 	"net/http"
-	"time"
 )
 
 type contextFunc func(c context.ApplicationContext, w http.ResponseWriter, r *http.Request)
@@ -24,13 +23,6 @@ type contextHandler struct {
 	f contextFunc
 }
 
-func purgePeersRunner(context context.ApplicationContext, maxAge time.Duration, loop time.Duration) {
-	for {
-		context.Database.PurgePeers(maxAge)
-		time.Sleep(loop)
-	}
-}
-
 func Start() {
 	cfg := config.GetConfig()
 	context := context.ApplicationContext{}
@@ -38,7 +30,6 @@ func Start() {
 	context.Database.Start()
 
 	log.Print("Starting background database cleaner")
-	go purgePeersRunner(context, cfg.Server.MaxPeerAge*time.Second, 30*time.Second)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})
