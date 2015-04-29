@@ -1,0 +1,15 @@
+[Unit]
+Description=Gobitt bittorrent tracker
+Documentation=https://github.com/jbonachera/gobitt
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/gobitt
+Environment=GOTRACEBACK=crash
+ExecStart=/usr/bin/gobitt -confdir /etc/gobitt
+User=gobitt
+Group=gobitt
+
+[Install]
+WantedBy=multi-user.target
+
