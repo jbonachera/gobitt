@@ -65,11 +65,11 @@ func getDatabaseString(cfg dBConfig) string {
 	return auth_string + cfg.MongoDB.Host + ":" + cfg.MongoDB.Port + getDatabaseConfString(cfg)
 }
 func getDatabase(cfg dBConfig) *mgo.Session {
-	log.Printf("Initiating connection to MongoDB")
+	log.Printf("Initiating connection to MongoDB on " + cfg.MongoDB.Host)
 	session, err := mgo.Dial(getDatabaseString(cfg))
 	if err != nil {
 		if err := session.Ping(); err != nil {
-			log.Fatal("Error while opening connexion to MongDB!")
+			log.Fatal("Error while opening connexion to MongoDB!")
 		}
 	}
 	log.Println("Sucessfully connected to MongoDB!")
@@ -78,7 +78,7 @@ func getDatabase(cfg dBConfig) *mgo.Session {
 
 func (self *MongoDBDatabasePlugin) Start(config string) {
 	var cfg dBConfig
-	gcfg.ReadFileInto(&cfg, config)
+	gcfg.ReadFileInto(&cfg, config+"/mongodb.ini")
 	if cfg.MongoDB.MaxPeerAge <= 0 {
 		cfg.MongoDB.MaxPeerAge = 3600
 	}
