@@ -76,9 +76,9 @@ func getDatabase(cfg dBConfig) *mgo.Session {
 	return session
 }
 
-func (self *MongoDBDatabasePlugin) Start() {
+func (self *MongoDBDatabasePlugin) Start(config string) {
 	var cfg dBConfig
-	gcfg.ReadFileInto(&cfg, "mongodb.ini")
+	gcfg.ReadFileInto(&cfg, config)
 	if cfg.MongoDB.MaxPeerAge <= 0 {
 		cfg.MongoDB.MaxPeerAge = 3600
 	}

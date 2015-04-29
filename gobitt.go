@@ -3,6 +3,7 @@
 package gobitt
 
 import (
+	"flag"
 	"github.com/jbonachera/gobitt/tracker"
 	"github.com/jbonachera/gobitt/tracker/config"
 	"github.com/jbonachera/gobitt/tracker/context"
@@ -23,11 +24,15 @@ type contextHandler struct {
 	f contextFunc
 }
 
+var confdir *string = flag.String("confdir", ".", "main configuration folder")
+
 func Start() {
-	cfg := config.GetConfig()
+	flag.Parse()
+	cfg := config.GetConfig(*confdir)
 	context := context.ApplicationContext{}
+	context.Confdir = *confdir
 	context.Database = plugin.GetDatabasePlugin(cfg.Server.DatabasePlugin)
-	context.Database.Start()
+	context.Database.Start(*confdir)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})

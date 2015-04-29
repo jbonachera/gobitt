@@ -16,7 +16,7 @@ func GetDatabasePlugin(name string) DatabasePlugin {
 
 type DatabasePlugin interface {
 	// This should initialize database session, store it in the context, and eventually managed the database schema.
-	Start()
+	Start(config string)
 	FindPeerList(limit int, hash string) ([]models.Peer, error)
 	FindPeer(limit int, hash string) (models.Peer, error)
 	UpsertPeer(peer models.Peer)

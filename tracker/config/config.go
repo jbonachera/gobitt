@@ -15,9 +15,9 @@ type Config struct {
 	}
 }
 
-func GetConfig() Config {
+func GetConfig(path string) Config {
 	var cfg Config
-	err := gcfg.ReadFileInto(&cfg, "config.ini")
+	err := gcfg.ReadFileInto(&cfg, path+"/config.ini")
 	if err != nil {
 		log.Fatal("Configuration error: " + err.Error())
 	}

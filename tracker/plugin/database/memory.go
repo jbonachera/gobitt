@@ -17,7 +17,7 @@ type MemoryDatabasePlugin struct {
 	peers    []models.Peer
 }
 
-func (self *MemoryDatabasePlugin) Start() {
+func (self *MemoryDatabasePlugin) Start(config string) {
 	self.torrents = []models.Torrent{}
 	self.peers = []models.Peer{}
 	go purgePeerRunner(self)
