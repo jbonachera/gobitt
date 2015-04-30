@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // NewAnnounceRequest returns an AnnounceRequest from raw data.
@@ -46,14 +47,20 @@ func validateArg(a string, size int,
 // instead of returning an error code the client. This may change in the future.
 func NewAnnounceRequestFromHTTPRequest(r *http.Request) (*models.AnnounceRequest, error) {
 	var ip []string
-	var given_ip string
+	var remote_ip, given_ip string
 
 	port, protocol_error := validateArg(r.URL.Query().Get("port"), -1, models.ErrMissingPort, models.ErrMissingPort)
 	if protocol_error != nil {
 		return nil, protocol_error
 	}
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		remote_ip = strings.TrimSpace(strings.Split(xff, ",")[0])
+	}
+	if IP := net.ParseIP(remote_ip); IP == nil {
+		remote_ip = r.RemoteAddr
+	}
 
-	ip = append(ip, r.RemoteAddr)
+	ip = append(ip, remote_ip)
 	if r.URL.Query().Get("ipv6") != "" {
 		given_ip = "[" + r.URL.Query().Get("ipv6") + "]:" + port
 	} else if r.URL.Query().Get("ip") != "" {
