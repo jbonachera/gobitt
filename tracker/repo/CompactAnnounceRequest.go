@@ -8,7 +8,6 @@ import (
 	"github.com/zeebo/bencode"
 	"log"
 	"net"
-	"strconv"
 )
 
 // NewCompactAnnounceAnswer creates a compactannounceAnswer object, and does all
@@ -17,12 +16,15 @@ func NewCompactAnnounceAnswer(interval, minInterval int, peers []models.Peer) *m
 	var peer string
 	var peerv6 string
 	for _, item := range peers {
-		for _, ip_str := range item.Ip {
-			ip := net.ParseIP(ip_str)
-			if ip == nil {
-				panic("Invalid IP address")
+		for _, host_str := range item.Ip {
+			var ip net.IP
+			var port string
+			if ip_str, port_str, err := net.SplitHostPort(host_str); err != nil {
+				panic("Invalid IP address found")
+			} else {
+				ip = net.ParseIP(ip_str)
+				port = port_str
 			}
-			port, _ := strconv.ParseInt(item.Port, 10, 32)
 			buf := new(bytes.Buffer)
 			err := binary.Write(buf, binary.LittleEndian, port)
 			if p4 := ip.To4(); len(p4) == net.IPv4len {

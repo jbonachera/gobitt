@@ -15,7 +15,6 @@ func NewPeer(peerId, hash, port string,
 	numwant int) models.Peer {
 	return models.Peer{peerId,
 		hash,
-		port,
 		downloaded,
 		uploaded,
 		left,

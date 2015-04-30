@@ -15,7 +15,6 @@ func NewAnnounceAnswer(interval, minInterval int, peers []models.Peer) *models.A
 		peer := make(map[string]interface{}, 3)
 		peer["id"] = item.PeerId
 		peer["ip"] = item.Ip
-		peer["port"] = item.Port
 		peers_clean[index] = peer
 	}
 	return &models.AnnounceAnswer{interval, minInterval, peers_clean}

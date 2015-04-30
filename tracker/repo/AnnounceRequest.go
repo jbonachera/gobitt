@@ -48,17 +48,18 @@ func NewAnnounceRequestFromHTTPRequest(r *http.Request) (*models.AnnounceRequest
 	var ip []string
 	var given_ip string
 
-	remote_ip, _, err := net.SplitHostPort(r.RemoteAddr)
-	ip = append(ip, remote_ip)
-	if err != nil {
-		panic(err)
+	port, protocol_error := validateArg(r.URL.Query().Get("port"), -1, models.ErrMissingPort, models.ErrMissingPort)
+	if protocol_error != nil {
+		return nil, protocol_error
 	}
+
+	ip = append(ip, r.RemoteAddr)
 	if r.URL.Query().Get("ipv6") != "" {
-		given_ip = r.URL.Query().Get("ipv6")
+		given_ip = "[" + r.URL.Query().Get("ipv6") + "]:" + port
 	} else if r.URL.Query().Get("ip") != "" {
-		given_ip = r.URL.Query().Get("ip")
+		given_ip = r.URL.Query().Get("ip") + ":" + port
 	}
-	if net.ParseIP(given_ip) != nil {
+	if _, _, err := net.SplitHostPort(given_ip); err == nil {
 		ip = append(ip, given_ip)
 	}
 	hash, protocol_error := validateArg(r.URL.Query().Get("info_hash"), 20, models.ErrInvalidInfoHash, models.ErrMissingInfoHash)
@@ -66,10 +67,6 @@ func NewAnnounceRequestFromHTTPRequest(r *http.Request) (*models.AnnounceRequest
 		return nil, protocol_error
 	}
 	peerID, protocol_error := validateArg(r.URL.Query().Get("peer_id"), 20, models.ErrInvalidPeerID, models.ErrMissingPeerID)
-	if protocol_error != nil {
-		return nil, protocol_error
-	}
-	port, protocol_error := validateArg(r.URL.Query().Get("port"), -1, models.ErrMissingPort, models.ErrMissingPort)
 	if protocol_error != nil {
 		return nil, protocol_error
 	}

@@ -131,7 +131,7 @@ func (self *MongoDBDatabasePlugin) UpsertPeer(peer models.Peer) {
 	sess := self.dbSession.Copy()
 	defer sess.Close()
 	db := sess.DB("tracker").C(table)
-	db.Upsert(bson.M{"ip": peer.Ip, "port": peer.Port, "peerid": peer.PeerId, "hash": peer.Hash}, &peer)
+	db.Upsert(bson.M{"ip": peer.Ip, "peerid": peer.PeerId, "hash": peer.Hash}, &peer)
 }
 
 func (self *MongoDBDatabasePlugin) RemovePeer(peer models.Peer) {
@@ -139,7 +139,7 @@ func (self *MongoDBDatabasePlugin) RemovePeer(peer models.Peer) {
 	sess := self.dbSession.Copy()
 	defer sess.Close()
 	db := sess.DB("tracker").C(table)
-	db.Remove(bson.M{"hash": peer.Hash, "peerid": peer.PeerId, "ip": peer.Ip, "port": peer.Port})
+	db.Remove(bson.M{"hash": peer.Hash, "peerid": peer.PeerId, "ip": peer.Ip})
 }
 
 func (self *MongoDBDatabasePlugin) FindTorrent(hash string) (models.Torrent, error) {

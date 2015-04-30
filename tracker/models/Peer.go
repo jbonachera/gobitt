@@ -14,7 +14,6 @@ import "time"
 type Peer struct {
 	PeerId     string
 	Hash       string
-	Port       string
 	Downloaded int
 	Uploaded   int
 	Left       int
