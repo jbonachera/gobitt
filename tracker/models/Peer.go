@@ -18,7 +18,7 @@ type Peer struct {
 	Downloaded int
 	Uploaded   int
 	Left       int
-	Ip         string
+	Ip         []string
 	NumWant    int
 	LastSeen   time.Time
 }

@@ -5,7 +5,7 @@ package models
 type AnnounceRequest struct {
 	Info_hash  string
 	Peer_id    string
-	Ip         string
+	Ip         []string
 	Port       string
 	Downloaded int
 	Uploaded   int

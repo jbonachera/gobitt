@@ -10,8 +10,8 @@ import (
 // NewAnnounceRequest returns an AnnounceRequest from raw data.
 func NewAnnounceRequest(
 	info_hash,
-	peer_id,
-	ip,
+	peer_id string,
+	ip []string,
 	port string,
 	downloaded int,
 	uploaded int,
@@ -45,9 +45,21 @@ func validateArg(a string, size int,
 // It also currently hardcode the numwant parameter to a maximum value of 50
 // instead of returning an error code the client. This may change in the future.
 func NewAnnounceRequestFromHTTPRequest(r *http.Request) (*models.AnnounceRequest, error) {
-	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	var ip []string
+	var given_ip string
+
+	remote_ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	ip = append(ip, remote_ip)
 	if err != nil {
 		panic(err)
+	}
+	if r.URL.Query().Get("ipv6") != "" {
+		given_ip = r.URL.Query().Get("ipv6")
+	} else if r.URL.Query().Get("ip") != "" {
+		given_ip = r.URL.Query().Get("ip")
+	}
+	if net.ParseIP(given_ip) != nil {
+		ip = append(ip, given_ip)
 	}
 	hash, protocol_error := validateArg(r.URL.Query().Get("info_hash"), 20, models.ErrInvalidInfoHash, models.ErrMissingInfoHash)
 	if protocol_error != nil {

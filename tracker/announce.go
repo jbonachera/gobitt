@@ -43,13 +43,13 @@ func AnnounceHandler(c context.ApplicationContext, w http.ResponseWriter, r *htt
 	// Process event
 	switch announceRequest.Event {
 	case "completed":
-		log.Print(peer.Ip + ":" + peer.Port + " completed a download")
+		log.Print(peer.Ip[0] + ":" + peer.Port + " completed a download")
 		processAnnounceCompleted(c, torrent)
 	case "stopped":
-		log.Print(peer.Ip + ":" + peer.Port + " stopped announcing")
+		log.Print(peer.Ip[0] + ":" + peer.Port + " stopped announcing")
 		processAnnounceStopped(c, peer)
 	default: //"Started" is managed in the default case
-		log.Print("New announce from " + peer.Ip + ":" + peer.Port)
+		log.Print("New announce from " + peer.Ip[0] + ":" + peer.Port)
 		processAnnounceStarted(c, w, torrent)
 	}
 }

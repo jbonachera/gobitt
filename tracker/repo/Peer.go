@@ -11,7 +11,7 @@ import (
 // to the current time.
 func NewPeer(peerId, hash, port string,
 	downloaded, uploaded, left int,
-	ip string,
+	ip []string,
 	numwant int) models.Peer {
 	return models.Peer{peerId,
 		hash,
