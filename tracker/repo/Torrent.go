@@ -13,21 +13,22 @@ func NewTorrent(c context.ApplicationContext, hash string) models.Torrent {
 }
 
 func GetTorrent(c context.ApplicationContext, hash string) models.Torrent {
-	var t models.Torrent
+	var torrent models.Torrent
 	if t, err := c.Database.FindTorrent(hash); err != nil {
 		t = NewTorrent(c, hash)
+		torrent = t
 	} else {
 		t.Peers = NewPeerListFromHash(c, hash)
+		torrent = t
 	}
-	complete, incomplete := 0, len(t.Peers)
-	for _, peer := range t.Peers {
+	torrent.Complete, torrent.Incomplete = 0, len(torrent.Peers)
+	for _, peer := range torrent.Peers {
 		if peer.Left == 0 {
-			complete += 1
-			incomplete -= 1
+			torrent.Complete = torrent.Complete + 1
+			torrent.Incomplete = torrent.Incomplete - 1
 		}
 	}
-
-	return t
+	return torrent
 }
 
 func SaveTorrent(c context.ApplicationContext, t models.Torrent) {

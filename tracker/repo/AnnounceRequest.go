@@ -57,10 +57,9 @@ func NewAnnounceRequestFromHTTPRequest(r *http.Request) (*models.AnnounceRequest
 		remote_ip = strings.TrimSpace(strings.Split(xff, ",")[0])
 	}
 	if IP := net.ParseIP(remote_ip); IP == nil {
-		remote_ip = r.RemoteAddr
+		remote_ip, _, _ = net.SplitHostPort(r.RemoteAddr)
 	}
-
-	ip = append(ip, remote_ip)
+	ip = append(ip, remote_ip+":"+port)
 	if r.URL.Query().Get("ipv6") != "" {
 		given_ip = "[" + r.URL.Query().Get("ipv6") + "]:" + port
 	} else if r.URL.Query().Get("ip") != "" {

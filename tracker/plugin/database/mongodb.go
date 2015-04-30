@@ -89,8 +89,8 @@ func (self *MongoDBDatabasePlugin) Start(config string) {
 
 	hashIndex := mgo.Index{
 		Key:        []string{"hash"},
-		Unique:     true,
-		DropDups:   true,
+		Unique:     false,
+		DropDups:   false,
 		Background: true,
 	}
 	dateIndex := mgo.Index{

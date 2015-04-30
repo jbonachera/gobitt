@@ -3,11 +3,11 @@ package repo
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"github.com/jbonachera/gobitt/tracker/models"
 	"github.com/zeebo/bencode"
 	"log"
 	"net"
+	"strconv"
 )
 
 // NewCompactAnnounceAnswer creates a compactannounceAnswer object, and does all
@@ -18,19 +18,19 @@ func NewCompactAnnounceAnswer(interval, minInterval int, peers []models.Peer) *m
 	for _, item := range peers {
 		for _, host_str := range item.Ip {
 			var ip net.IP
-			var port string
+			var port int64
 			if ip_str, port_str, err := net.SplitHostPort(host_str); err != nil {
 				panic("Invalid IP address found")
 			} else {
 				ip = net.ParseIP(ip_str)
-				port = port_str
+				port, _ = strconv.ParseInt(port_str, 10, 32)
 			}
 			buf := new(bytes.Buffer)
 			err := binary.Write(buf, binary.LittleEndian, port)
 			if p4 := ip.To4(); len(p4) == net.IPv4len {
 				// If we are working on an IPv4
 				if err != nil {
-					fmt.Println("binary.Write failed:", err)
+					log.Println("binary.Write failed:", err)
 				}
 				src := [6]byte{p4[0], p4[1], p4[2], p4[3], buf.Bytes()[1], buf.Bytes()[0]}
 				str := string(src[:])
