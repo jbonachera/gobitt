@@ -9,6 +9,7 @@ import (
 	"github.com/jbonachera/gobitt/tracker/context"
 	"github.com/jbonachera/gobitt/tracker/plugin"
 	_ "github.com/jbonachera/gobitt/tracker/plugin/database"
+	"github.com/sebest/xff"
 	"log"
 	"net/http"
 )
@@ -35,7 +36,7 @@ func Start() {
 	context.Database.Start(*confdir)
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
-	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})
-	http.Handle("/scrape", contextHandler{context, tracker.ScrapeHandler})
+	http.Handle("/announce", xff.Handler(contextHandler{context, tracker.AnnounceHandler}))
+	http.Handle("/scrape", xff.Handler(contextHandler{context, tracker.ScrapeHandler}))
 	http.ListenAndServe(cfg.Server.BindAddress+":"+cfg.Server.Port, nil)
 }
