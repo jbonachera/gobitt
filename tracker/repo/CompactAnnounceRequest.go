@@ -20,7 +20,7 @@ func NewCompactAnnounceAnswer(interval, minInterval int, peers []models.Peer) *m
 			var ip net.IP
 			var port int64
 			if ip_str, port_str, err := net.SplitHostPort(host_str); err != nil {
-				panic("Invalid IP address found")
+				panic("Invalid IP address found: " + host_str)
 			} else {
 				ip = net.ParseIP(ip_str)
 				port, _ = strconv.ParseInt(port_str, 10, 32)
