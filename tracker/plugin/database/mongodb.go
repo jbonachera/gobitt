@@ -151,6 +151,15 @@ func (self *MongoDBDatabasePlugin) FindTorrent(hash string) (models.Torrent, err
 	err := db.Find(bson.M{"hash": hash}).One(&t)
 	return t, err
 }
+func (self *MongoDBDatabasePlugin) ListTorrents() []models.Torrent {
+	var t []models.Torrent
+	table := "files"
+	sess := self.dbSession.Copy()
+	defer sess.Close()
+	db := sess.DB("tracker").C(table)
+	_ = db.Find(bson.M{}).All(&t)
+	return t
+}
 
 func (self *MongoDBDatabasePlugin) RemoveTorrent(t models.Torrent) {
 	table := "files"
@@ -166,12 +175,4 @@ func (self *MongoDBDatabasePlugin) UpsertTorrent(t models.Torrent) {
 	defer sess.Close()
 	db := sess.DB("tracker").C(table)
 	db.Upsert(bson.M{"hash": t.Hash}, &t)
-}
-func (self *MongoDBDatabasePlugin) PurgePeers(maxAge time.Duration) {
-	table := "peers"
-	sess := self.dbSession.Copy()
-	defer sess.Close()
-	db := sess.DB("tracker").C(table)
-	oldestDate := time.Now().Add(-maxAge)
-	db.Remove(bson.M{"lastseen": bson.M{"$lte": oldestDate}})
 }

@@ -23,6 +23,7 @@ type DatabasePlugin interface {
 	RemovePeer(peer models.Peer)
 
 	FindTorrent(hash string) (models.Torrent, error)
+	ListTorrents() []models.Torrent
 	UpsertTorrent(t models.Torrent)
 	RemoveTorrent(t models.Torrent)
 }

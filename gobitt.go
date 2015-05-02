@@ -33,9 +33,11 @@ func Start() {
 	context.Confdir = *confdir
 	context.Database = plugin.GetDatabasePlugin(cfg.Server.DatabasePlugin)
 	context.Database.Start(*confdir)
+	context.Config = cfg
 
 	log.Print("Running on: " + cfg.Server.BindAddress + ":" + cfg.Server.Port)
 	http.Handle("/announce", contextHandler{context, tracker.AnnounceHandler})
 	http.Handle("/scrape", contextHandler{context, tracker.ScrapeHandler})
+	http.Handle("/rss", contextHandler{context, tracker.RSSHandler})
 	http.ListenAndServe(cfg.Server.BindAddress+":"+cfg.Server.Port, nil)
 }

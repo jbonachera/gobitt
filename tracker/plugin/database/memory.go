@@ -86,6 +86,10 @@ func (self *MemoryDatabasePlugin) RemovePeer(peer models.Peer) {
 	self.peers = append(self.peers[:index_to_remove], self.peers[index_to_remove+1:]...)
 }
 
+func (self *MemoryDatabasePlugin) ListTorrents() []models.Torrent {
+	return self.torrents
+}
+
 func (self *MemoryDatabasePlugin) FindTorrent(hash string) (models.Torrent, error) {
 	var torrent models.Torrent
 	for _, current_torrent := range self.torrents {

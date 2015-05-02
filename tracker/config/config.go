@@ -13,6 +13,9 @@ type Config struct {
 		DatabasePlugin string
 		MaxPeerAge     time.Duration
 	}
+	RSS struct {
+		RSSBaseDownloadURL string
+	}
 }
 
 func GetConfig(path string) Config {

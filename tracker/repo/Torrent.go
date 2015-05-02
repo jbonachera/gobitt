@@ -12,6 +12,10 @@ func NewTorrent(c context.ApplicationContext, hash string) models.Torrent {
 	return models.Torrent{hash, NewPeerListFromHash(c, hash), 0, 0, 0}
 }
 
+func ListTorrents(c context.ApplicationContext) []models.Torrent {
+	return c.Database.ListTorrents()
+}
+
 func GetTorrent(c context.ApplicationContext, hash string) models.Torrent {
 	var torrent models.Torrent
 	if t, err := c.Database.FindTorrent(hash); err != nil {
