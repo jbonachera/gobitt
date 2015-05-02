@@ -13,13 +13,13 @@ func processAnnounceStarted(c context.ApplicationContext, w http.ResponseWriter,
 	// We get a list of all peers seeding this file
 	answer := repo.NewCompactAnnounceAnswerString(600, 100, // I should move that to a tracker.Configuration file.
 		repo.NewPeerListFromHash(c, torrent.Hash))
+	repo.SaveTorrent(c, torrent)
 	fmt.Fprintf(w, answer)
 }
 
 func processAnnounceCompleted(c context.ApplicationContext, torrent models.Torrent) {
 	torrent.Downloaded += 1
 	repo.SaveTorrent(c, torrent)
-
 }
 
 func processAnnounceStopped(c context.ApplicationContext, peer models.Peer) {
