@@ -1,9 +1,9 @@
 package database
 
 import (
-	"code.google.com/p/gcfg"
 	"github.com/jbonachera/gobitt/tracker/models"
 	"github.com/jbonachera/gobitt/tracker/plugin"
+	"gopkg.in/gcfg.v1"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
